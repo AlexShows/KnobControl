@@ -12,7 +12,7 @@ SRC_FILES = \
 	
 #description block
 $(EXEC_NAME) : $(SRC_FILES)
-	cl /EHsc /Fe$(DIR_BIN)\$(EXECUTABLE_NAME) /I$(DIR_INCLUDE) $(SRC_FILES) $(DIR_LIB)\hid.lib setupapi.lib
+	cl /EHsc /Zi /Fe$(DIR_BIN)\$(EXECUTABLE_NAME) /I$(DIR_INCLUDE) $(SRC_FILES) $(DIR_LIB)\hid.lib setupapi.lib
 	copy *.obj $(DIR_INTERMEDIATE)
 	del *.obj
 
