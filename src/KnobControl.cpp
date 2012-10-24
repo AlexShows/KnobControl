@@ -7,6 +7,7 @@
 
 HANDLE AttachToPnP(const GUID* mGUID);
 HANDLE GetDeviceHandle(HANDLE mHandle, const GUID* mGUID);
+void PrintLastError(DWORD dwLastError);
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -46,10 +47,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		else
 		{
 			cout << "Unable to Get Manufacturer String" << endl;
-			DWORD   dwLastError = ::GetLastError();
-			char lpBuffer[256] = _T("?");
-			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwLastError, MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT), lpBuffer, 255, NULL);
-			printf(lpBuffer);
+			PrintLastError(::GetLastError());
 		}
 
 		if(HidD_GetProductString(HIDHandle, sProd, KC_STRING_SIZE))
@@ -57,10 +55,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		else
 		{
 			cout << "Unable to Get Product String" << endl;
-			DWORD   dwLastError = ::GetLastError();
-			char lpBuffer[256] = _T("?");
-			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwLastError, MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT), lpBuffer, 255, NULL);
-			printf(lpBuffer);
+			PrintLastError(::GetLastError());
 		}
 	}
 
@@ -192,15 +187,44 @@ HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 
 					CloseHandle(hDevice);
 				} /* fi valid handle */
+				else
+				{
+					cout << "Unable to create file for HID device index " << iHIDdev << endl;
+					PrintLastError(::GetLastError());
+				}
 			} /* fi successful get device interface detail */
 
 		} /* fi successful enum interfaces */
 		else
 		{
-			cout << "Unable to Enumerate Interfaces for HID device index " << iHIDdev << endl;
+			/* We might be here because there are no more devices in the list... */
+			DWORD dwLastErr = ::GetLastError();
+			if(dwLastErr == ERROR_NO_MORE_ITEMS)
+			{
+				cout << "No more items in the list!" << endl;
+				cout << "TODO: Fix this! Exit on the device query loop on this condition!" << endl;
+			}
+			else
+			{
+				cout << "Unable to Enumerate Interfaces for HID device index " << iHIDdev << endl;
+				PrintLastError(dwLastErr);
+			}
 		}
 
 	} /* for (iHIDdev = 0; (iHIDdev < KC_MAX_DEVICES); iHIDdev++) */
 
 	return INVALID_HANDLE_VALUE;
+}
+
+/*********************
+Get the Last Error 
+and print it out to
+the console
+**********************/
+void PrintLastError(DWORD dwLastError)
+{
+	char lpBuffer[256] = _T("?");
+	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwLastError, MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT), lpBuffer, 255, NULL);
+	printf("Error 0x%x: ", dwLastError);
+	printf(lpBuffer);
 }

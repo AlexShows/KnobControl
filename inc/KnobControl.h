@@ -20,5 +20,5 @@ using namespace std;
 #define MATCHING_VID 0x077D // Griffin PowerMate VID
 #define MATCHING_PID 0x0410 // Griffin PowerMate PID
 #define KC_STRING_SIZE 512 // Found some devices that fail for 256, using 512 now
-#define KC_MAX_DEVICES 20 // How deep should we search into the PnP chain?
+#define KC_MAX_DEVICES 30 // How deep should we search into the PnP chain?
 #define KC_PACKET_SIZE 20 // TODO: Need to determine packet size and revisit this
