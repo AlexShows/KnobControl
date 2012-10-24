@@ -1,14 +1,9 @@
 // KnobControl.cpp
 // Author: Alex Shows
-// Connect to a Griffin PowerMate, read packets, and do something interesting with them
+// License: Released under the MIT License (http://opensource.org/licenses/mit-license.php)
+// Description: Connect to a Griffin PowerMate, read packets, and do something interesting with them
 
 #include "KnobControl.h"
-
-#define MATCHING_VID 0x077D // Griffin PowerMate VID
-#define MATCHING_PID 0x0410 // Griffin PowerMate PID
-#define KC_STRING_SIZE 512 // Found some devices that fail for 256, using 512 now
-#define KC_MAX_DEVICES 15 // How deep should we search into the PnP chain?
-#define KC_PACKET_SIZE 20 // TODO: Need to determine packet size and revisit this
 
 HANDLE AttachToPnP(const GUID* mGUID);
 HANDLE GetDeviceHandle(HANDLE mHandle, const GUID* mGUID);
