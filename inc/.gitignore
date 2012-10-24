@@ -1,0 +1,6 @@
+#################
+## Win DDK files
+#################
+hidpi.h
+hidsdi.h
+hidusage.h

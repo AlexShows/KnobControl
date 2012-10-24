@@ -47,9 +47,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			cout << "Unable to Get Manufacturer String" << endl;
 			DWORD   dwLastError = ::GetLastError();
-			TCHAR   lpBuffer[256] = _T("?");
+			char lpBuffer[256] = _T("?");
 			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwLastError, MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT), lpBuffer, 255, NULL);
-			wprintf(lpBuffer);
+			printf(lpBuffer);
 		}
 
 		if(HidD_GetProductString(HIDHandle, sProd, KC_STRING_SIZE))
@@ -58,9 +58,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			cout << "Unable to Get Product String" << endl;
 			DWORD   dwLastError = ::GetLastError();
-			TCHAR   lpBuffer[256] = _T("?");
+			char lpBuffer[256] = _T("?");
 			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwLastError, MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT), lpBuffer, 255, NULL);
-			wprintf(lpBuffer);
+			printf(lpBuffer);
 		}
 	}
 
@@ -167,14 +167,14 @@ HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 			{
 				cout << "Unable to Get Device Interface Detail for HID device index " << iHIDdev << endl;
 				DWORD   dwLastError = ::GetLastError();
-				TCHAR   lpBuffer[256] = _T("?");
+				char lpBuffer[256] = _T("?");
 				FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwLastError, MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT), lpBuffer, 255, NULL);
-				wprintf(lpBuffer);
+				printf(lpBuffer);
 			}
 			else
 			{
 				/* Open the device */
-				hDevice = CreateFile((LPWSTR)&MyHIDDeviceData.DevicePath, 
+				hDevice = CreateFile((LPCSTR)&MyHIDDeviceData.DevicePath, 
 					GENERIC_READ|GENERIC_WRITE,
 					FILE_SHARE_READ|FILE_SHARE_WRITE, 
 					&SecurityAttributes, 
