@@ -7,3 +7,8 @@ The PowerMate shows up a generic HID device and successfully loads the generic H
 Thus we can open the device and read packets from it. 
 This project will first need to dissect the packets and determine their structure.
 Then it will need to do something useful with that information, like adjusting volume or cycling through a menu, etc.
+
+LICENSE
+=======
+KnobControl is released under the MIT License:
+http://opensource.org/licenses/MIT
