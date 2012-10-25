@@ -19,7 +19,7 @@ knobcontrol : $(SRC_FILES)
 
 # knobcontrol (debug version)
 knobcontrol_debug : $(SRC_FILES)
-	cl /EHsc /Zi /Fe$(DIR_RELEASE_BIN)\$(EXEC_NAME) /I$(DIR_INCLUDE) $(SRC_FILES) $(DIR_LIB)\hid.lib setupapi.lib
+	cl /EHsc /Zi /Fe$(DIR_DEBUG_BIN)\$(EXEC_NAME) /I$(DIR_INCLUDE) $(SRC_FILES) $(DIR_LIB)\hid.lib setupapi.lib
 	copy *.obj $(DIR_INTERMEDIATE)
 	del *.obj
 	copy *.pdb $(DIR_INTERMEDIATE)
@@ -31,7 +31,7 @@ create_release_dirs :
  @if not exist $(DIR_INTERMEDIATE) mkdir $(DIR_INTERMEDIATE)
 
 # create debug output directories
-create_release_dirs :
+create_debug_dirs :
  @if not exist $(DIR_DEBUG_BIN) mkdir $(DIR_DEBUG_BIN)
  @if not exist $(DIR_INTERMEDIATE) mkdir $(DIR_INTERMEDIATE)
  
