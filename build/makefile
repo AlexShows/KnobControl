@@ -9,7 +9,8 @@ DIR_INTERMEDIATE = ..\intermediate
 DIR_BUILD = ..\build
 
 SRC_FILES = \
-	$(DIR_SRC)\KnobControl.cpp
+	$(DIR_SRC)\KnobControl.cpp \
+	$(DIR_SRC)\HIDComm.cpp
 	
 # knobcontrol (release version)
 knobcontrol : $(SRC_FILES)

@@ -2,22 +2,19 @@
 // Author : Alex Shows
 // License: Released under the MIT License (http://opensource.org/licenses/mit-license.php)
 
-#include <stdio.h>
-#include <tchar.h>
+#pragma once
+#ifndef KNOBCONTROL_H
+#define KNOBCONTROL_H
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <SetupAPI.h> // needs setupapi.lib
-
-// The extern C is important here
-extern "C"{
-#include "hidsdi.h"			// needs hid.lib from the Win DDK
-}
 
 #include <iostream>
 using namespace std;
 
-#define MATCHING_VID 0x077D // Griffin PowerMate VID
-#define MATCHING_PID 0x0410 // Griffin PowerMate PID
-#define KC_STRING_SIZE 512 // Found some devices that fail for 256, using 512 now
-#define KC_PACKET_SIZE 20 // TODO: Need to determine packet size and revisit this
+#include "HIDComm.h"
+
+#define POWERMATE_VID 0x077D // Griffin PowerMate Vendor ID
+#define POWERMATE_PID 0x0410 // Griffin PowerMate Product ID
+
+#endif /* KNOBCONTROL_H */
