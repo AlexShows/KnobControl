@@ -109,8 +109,9 @@ HANDLE AttachToPnP(const GUID* mGUID)
 }
 
 /********************
-Using the GUID and Plug'n'Play handle, loop through the available HID device handles
-until a match is found 
+Using the GUID and Plug'n'Play handle, 
+loop through the available HID device 
+handles until a match is found 
 **********************/
 HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 {
@@ -122,9 +123,9 @@ HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 
 	HIDD_ATTRIBUTES HIDAttributes; /* Attributes of the HID device */
 	SP_INTERFACE_DEVICE_DATA DeviceInterfaceData; /* holds device interface data for the current device */ 
-	
-	int iHIDdev = 0; /* used for looping through all the devices */
-	BOOL success;
+
+	int iHIDdev = 0;
+	BOOL success, endOfList = false;
 	ULONG bRet; /* how many bytes were returned from the device interface detail request? */
 
 	/* Security attributes for opening the device for raw file I/O */
@@ -133,9 +134,10 @@ HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 	SecurityAttributes.lpSecurityDescriptor = NULL; 
 	SecurityAttributes.bInheritHandle = false; 
 
-	/* Cycle through, up to max devices, looking for the one we want to talk to */
-	for (iHIDdev = 0; (iHIDdev < KC_MAX_DEVICES); iHIDdev++)
+	/* Loop through each HID device by index, searching for the device of interest */
+	while (!endOfList)
 	{
+		/* Note: this function returns a handle from _inside_ this loop if it finds a matching VID/PID */ 
 		DeviceInterfaceData.cbSize = sizeof(DeviceInterfaceData);
 
 		/* Test for a device at this index */
@@ -147,7 +149,7 @@ HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 
 		if(success)
 		{
-			//cout << "Successfully Enumerated Device Interface for index " << iHIDdev << endl;
+			cout << "Successfully Enumerated Device Interface for index " << iHIDdev << endl;
 			
 			/* Found a device, so get the name */
 			MyHIDDeviceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
@@ -161,10 +163,7 @@ HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 			if(!success)
 			{
 				cout << "Unable to Get Device Interface Detail for HID device index " << iHIDdev << endl;
-				DWORD   dwLastError = ::GetLastError();
-				char lpBuffer[256] = _T("?");
-				FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwLastError, MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT), lpBuffer, 255, NULL);
-				printf(lpBuffer);
+				PrintLastError(::GetLastError());
 			}
 			else
 			{
@@ -185,11 +184,13 @@ HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 					if (success && HIDAttributes.VendorID == MATCHING_VID && HIDAttributes.ProductID == MATCHING_PID)
 						return hDevice;
 
+					printf("Device found does not match: VID 0x%x, PID 0x%x\n", HIDAttributes.VendorID, HIDAttributes.ProductID);	
+						
 					CloseHandle(hDevice);
 				} /* fi valid handle */
 				else
 				{
-					cout << "Unable to create file for HID device index " << iHIDdev << endl;
+					cout << "Invalid handle attempting to create file for HID device index " << iHIDdev << endl;
 					PrintLastError(::GetLastError());
 				}
 			} /* fi successful get device interface detail */
@@ -202,7 +203,7 @@ HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 			if(dwLastErr == ERROR_NO_MORE_ITEMS)
 			{
 				cout << "No more items in the list!" << endl;
-				cout << "TODO: Fix this! Exit on the device query loop on this condition!" << endl;
+				endOfList = true;
 			}
 			else
 			{
@@ -210,21 +211,22 @@ HANDLE GetDeviceHandle(HANDLE mPnPHandle, const GUID* mGUID)
 				PrintLastError(dwLastErr);
 			}
 		}
+		
+		iHIDdev++;
 
-	} /* for (iHIDdev = 0; (iHIDdev < KC_MAX_DEVICES); iHIDdev++) */
+	} /* end while device not found and not the end of the list */
 
 	return INVALID_HANDLE_VALUE;
 }
 
 /*********************
-Get the Last Error 
-and print it out to
-the console
+Get the Last Error and print 
+it out to the console
 **********************/
 void PrintLastError(DWORD dwLastError)
 {
 	char lpBuffer[256] = _T("?");
 	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwLastError, MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT), lpBuffer, 255, NULL);
-	printf("Error 0x%x: ", dwLastError);
+	printf("-:- ERROR 0x%x: ", dwLastError);
 	printf(lpBuffer);
 }
